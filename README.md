@@ -1,73 +1,92 @@
 # RAG System
 
-基于 Gemini API 的检索增强生成系统。
+A Retrieval-Augmented Generation (RAG) document Q&A system powered by Groq LLM and Gemini Embeddings.
 
-## 快速开始
+## Quick Start
 
-### 1. 安装依赖
+### 1. Install Dependencies
 
 ```bash
-cd /Users/xinle/ragsystem
 pip install -r requirements.txt
 ```
 
-### 2. 配置 API Key
+### 2. Configure API Keys
 
-编辑 `.env` 文件，填入你的 Gemini API Key：
+Edit `.env` file:
 
 ```bash
-GOOGLE_API_KEY=你的API密钥
+GOOGLE_API_KEY=your_gemini_api_key
+GROQ_API_KEY=your_groq_api_key
 ```
 
-获取密钥：https://aistudio.google.com/apikey
+Get keys from:
+- Gemini: https://aistudio.google.com/apikey
+- Groq: https://console.groq.com/keys
 
-### 3. 添加文档
+### 3. Add Documents
 
-将你的文档（PDF、TXT、MD）放入 `data/documents/` 目录。
+Place your PDF, TXT, or MD files in `data/documents/`
 
-### 4. 索引文档
+### 4. Index Documents
 
 ```bash
 python main.py --index
 ```
 
-### 5. 开始查询
+### 5. Start Querying
 
 ```bash
+# Interactive mode
 python main.py
+
+# Single query
+python main.py --query "Your question here"
 ```
 
-## 使用方法
+## Usage
 
-| 命令 | 说明 |
-|------|------|
-| `python main.py --index` | 索引 `data/documents/` 中的文档 |
-| `python main.py --index --url URL` | 索引文档 + 网页 |
-| `python main.py` | 交互式查询模式 |
-| `python main.py --query "问题"` | 单次查询模式 |
+| Command | Description |
+|---------|-------------|
+| `python main.py --index` | Index documents in `data/documents/` |
+| `python main.py --index --url URL` | Index documents + web page |
+| `python main.py` | Interactive query mode |
+| `python main.py --query "question"` | Single query mode |
 
-## 项目结构
+## Project Structure
 
 ```
 ragsystem/
-├── main.py              # 主程序
-├── config.py            # 配置文件
-├── requirements.txt     # 依赖
-├── .env                 # API 密钥
+├── main.py              # CLI entry point
+├── streamlit_app.py     # Web interface (Streamlit)
+├── config.py            # Configuration
+├── requirements.txt     # Dependencies
+├── .env                 # API keys
 ├── src/
-│   ├── document_loader.py  # 文档加载
-│   ├── text_splitter.py    # 文本切分
-│   ├── embeddings.py       # 向量嵌入
-│   ├── vector_store.py     # 向量存储
-│   ├── retriever.py        # 检索器
-│   └── generator.py        # 生成器
-├── data/documents/      # 文档目录
-└── db/chroma/           # 向量数据库
+│   ├── document_loader.py  # Document loading (PDF/TXT/MD/Web)
+│   ├── text_splitter.py    # Text chunking
+│   ├── embeddings.py       # Gemini embeddings
+│   ├── vector_store.py     # ChromaDB vector store
+│   ├── retriever.py        # Similarity search
+│   └── generator.py        # Groq LLM generation
+├── data/documents/      # Document directory
+└── db/chroma/           # Vector database
 ```
 
-## 支持格式
+## Supported Formats
 
-- PDF 文档
-- TXT 文本文件
-- Markdown 文件
-- 网页 URL
+- PDF documents
+- TXT text files
+- Markdown files
+- Web URLs
+
+## Tech Stack
+
+- **LLM**: Groq (Llama 3.3 70B)
+- **Embeddings**: Google Gemini
+- **Vector Store**: ChromaDB
+- **Framework**: LangChain
+- **Web UI**: Streamlit
+
+## License
+
+MIT

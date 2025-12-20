@@ -14,20 +14,20 @@ from config import GROQ_API_KEY, LLM_MODEL
 
 
 # RAG Prompt Template
-RAG_PROMPT = """你是一个有帮助的AI助手。请根据以下提供的上下文来回答用户的问题。
+RAG_PROMPT = """You are a helpful AI assistant. Please answer the user's question based on the provided context.
 
-规则：
-1. 只根据提供的上下文来回答问题
-2. 如果上下文中没有相关信息，请诚实地说"根据提供的文档，我没有找到相关信息"
-3. 回答要准确、简洁、有条理
-4. 如果适用，请引用信息来源
+Rules:
+1. Only answer based on the provided context
+2. If the context doesn't contain relevant information, honestly say "I couldn't find relevant information in the provided documents"
+3. Be accurate, concise, and well-organized
+4. Cite sources when applicable
 
-上下文：
+Context:
 {context}
 
-用户问题：{question}
+User Question: {question}
 
-回答："""
+Answer:"""
 
 
 def get_llm() -> ChatGroq:
@@ -52,7 +52,7 @@ def format_docs(docs) -> str:
     formatted = []
     for i, doc in enumerate(docs, 1):
         source = doc.metadata.get("file_name", doc.metadata.get("source", "Unknown"))
-        formatted.append(f"[文档 {i}] 来源: {source}\n{doc.page_content}")
+        formatted.append(f"[Document {i}] Source: {source}\n{doc.page_content}")
     return "\n\n---\n\n".join(formatted)
 
 

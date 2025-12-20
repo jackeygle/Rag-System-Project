@@ -15,7 +15,7 @@ load_dotenv()
 
 # Page config
 st.set_page_config(
-    page_title="RAG 智能文档助手",
+    page_title="RAG Document Assistant",
     page_icon="🤖",
     layout="wide",
 )
@@ -71,9 +71,9 @@ def init_rag():
     groq_key = os.getenv("GROQ_API_KEY")
     
     if not google_key:
-        return None, "❌ 缺少 GOOGLE_API_KEY"
+        return None, "❌ Missing GOOGLE_API_KEY"
     if not groq_key:
-        return None, "❌ 缺少 GROQ_API_KEY"
+        return None, "❌ Missing GROQ_API_KEY"
     
     try:
         from config import DATA_DIR
@@ -85,25 +85,25 @@ def init_rag():
         
         docs = load_all_documents(directory=DATA_DIR)
         if not docs:
-            return None, "❌ 未找到文档"
+            return None, "❌ No documents found"
         
         chunks = split_documents(docs)
         vs = create_vector_store(chunks)
         retriever = create_retriever(vs)
         chain = create_rag_chain(retriever)
         
-        return chain, f"✅ 已加载 {len(chunks)} 个文档块"
+        return chain, f"✅ Loaded {len(chunks)} document chunks"
         
     except Exception as e:
         import traceback
         traceback.print_exc()
-        return None, f"❌ 错误: {str(e)[:100]}"
+        return None, f"❌ Error: {str(e)[:100]}"
 
 
 def main():
     # Header
-    st.markdown('<h1 class="main-header">🤖 RAG 智能文档助手</h1>', unsafe_allow_html=True)
-    st.markdown('<p style="text-align: center; color: #666;">基于检索增强生成技术，从文档中精准回答问题</p>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">🤖 RAG Document Assistant</h1>', unsafe_allow_html=True)
+    st.markdown('<p style="text-align: center; color: #666;">AI-powered document Q&A using Retrieval-Augmented Generation</p>', unsafe_allow_html=True)
     
     # Initialize RAG
     rag_chain, status = init_rag()
@@ -115,9 +115,9 @@ def main():
         # Status box
         st.markdown(f"""
         <div class="status-box">
-            <h4>🔧 系统状态</h4>
+            <h4>🔧 System Status</h4>
             <p>{status}</p>
-            <p>🤖 模型: Llama 3.3 70B</p>
+            <p>🤖 Model: Llama 3.3 70B</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -125,16 +125,16 @@ def main():
         st.markdown("""
         <div class="feature-card">
             <div style="font-size: 24px;">📄</div>
-            <div><b>智能检索</b></div>
-            <div style="color: #888; font-size: 0.8rem;">从文档中精准定位</div>
+            <div><b>Smart Retrieval</b></div>
+            <div style="color: #888; font-size: 0.8rem;">Find relevant content</div>
         </div>
         """, unsafe_allow_html=True)
         
         st.markdown("""
         <div class="feature-card">
             <div style="font-size: 24px;">⚡</div>
-            <div><b>极速响应</b></div>
-            <div style="color: #888; font-size: 0.8rem;">基于 Groq 加速</div>
+            <div><b>Fast Response</b></div>
+            <div style="color: #888; font-size: 0.8rem;">Powered by Groq</div>
         </div>
         """, unsafe_allow_html=True)
     
@@ -158,17 +158,17 @@ def main():
         # Example buttons
         col_ex1, col_ex2, col_ex3 = st.columns(3)
         with col_ex1:
-            if st.button("什么是机器学习？", use_container_width=True):
-                st.session_state.pending_question = "什么是机器学习？"
+            if st.button("What is machine learning?", use_container_width=True):
+                st.session_state.pending_question = "What is machine learning?"
         with col_ex2:
-            if st.button("RAG 的优势是什么？", use_container_width=True):
-                st.session_state.pending_question = "RAG 的优势是什么？"
+            if st.button("What are RAG advantages?", use_container_width=True):
+                st.session_state.pending_question = "What are the advantages of RAG?"
         with col_ex3:
-            if st.button("梯度下降如何工作？", use_container_width=True):
-                st.session_state.pending_question = "梯度下降如何工作？"
+            if st.button("How does gradient descent work?", use_container_width=True):
+                st.session_state.pending_question = "How does gradient descent work?"
         
         # Text input
-        question = st.chat_input("💬 输入你的问题...")
+        question = st.chat_input("💬 Enter your question...")
         
         # Handle pending question from button
         if "pending_question" in st.session_state:
@@ -181,15 +181,15 @@ def main():
             
             # Generate response
             if rag_chain:
-                with st.spinner("🔍 正在检索文档..."):
+                with st.spinner("🔍 Searching documents..."):
                     try:
                         from src.generator import query
                         answer = query(rag_chain, question)
                         st.session_state.messages.append({"role": "assistant", "content": answer})
                     except Exception as e:
-                        st.session_state.messages.append({"role": "assistant", "content": f"❌ 错误: {e}"})
+                        st.session_state.messages.append({"role": "assistant", "content": f"❌ Error: {e}"})
             else:
-                st.session_state.messages.append({"role": "assistant", "content": "⚠️ 系统未初始化"})
+                st.session_state.messages.append({"role": "assistant", "content": "⚠️ System not initialized"})
             
             st.rerun()
     
