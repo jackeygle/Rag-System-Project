@@ -1,6 +1,7 @@
 """
 Generator Module
 Uses Groq LLM to generate responses based on retrieved context
+Falls back to general knowledge when no relevant documents found
 """
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
@@ -13,16 +14,17 @@ sys.path.insert(0, str(__file__).rsplit("/", 2)[0])
 from config import GROQ_API_KEY, LLM_MODEL
 
 
-# RAG Prompt Template
-RAG_PROMPT = """You are a helpful AI assistant. Please answer the user's question based on the provided context.
+# RAG Prompt Template - with fallback to general knowledge
+RAG_PROMPT = """You are a helpful AI assistant. Answer the user's question based on the provided context when relevant.
 
 Rules:
-1. Only answer based on the provided context
-2. If the context doesn't contain relevant information, honestly say "I couldn't find relevant information in the provided documents"
+1. If the context contains relevant information, use it to answer and cite sources
+2. If the context is NOT relevant to the question, use your general knowledge to provide a helpful answer
 3. Be accurate, concise, and well-organized
-4. Cite sources when applicable
+4. When using context, mention "According to the documents..."
+5. When using general knowledge, just answer directly without mentioning documents
 
-Context:
+Context from documents:
 {context}
 
 User Question: {question}
@@ -43,12 +45,15 @@ def get_llm() -> ChatGroq:
     return ChatGroq(
         model=LLM_MODEL,
         api_key=GROQ_API_KEY,
-        temperature=0.3,  # Lower temperature for more factual responses
+        temperature=0.3,
     )
 
 
 def format_docs(docs) -> str:
     """Format retrieved documents into a single context string."""
+    if not docs:
+        return "No relevant documents found."
+    
     formatted = []
     for i, doc in enumerate(docs, 1):
         source = doc.metadata.get("file_name", doc.metadata.get("source", "Unknown"))
