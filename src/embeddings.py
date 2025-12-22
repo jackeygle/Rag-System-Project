@@ -2,10 +2,11 @@
 Embeddings Module
 Creates vector embeddings using Gemini
 """
+from pathlib import Path
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 import sys
-sys.path.insert(0, str(__file__).rsplit("/", 2)[0])
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from config import GOOGLE_API_KEY, EMBEDDING_MODEL
 
 

@@ -36,3 +36,32 @@ TOP_K = 4  # Number of documents to retrieve
 
 # Vector Store Configuration
 COLLECTION_NAME = "rag_documents"
+
+
+def validate_api_keys() -> tuple[bool, list[str]]:
+    """Validate that all required API keys are configured.
+    
+    Returns:
+        tuple: (is_valid, list of missing key names)
+    """
+    missing = []
+    if not GOOGLE_API_KEY:
+        missing.append("GOOGLE_API_KEY")
+    if not GROQ_API_KEY:
+        missing.append("GROQ_API_KEY")
+    return len(missing) == 0, missing
+
+
+def get_api_key_help() -> str:
+    """Return help text for configuring API keys."""
+    return """
+To configure API keys, create a .env file with:
+
+GOOGLE_API_KEY=your_gemini_api_key
+GROQ_API_KEY=your_groq_api_key
+
+Get your keys from:
+- Gemini: https://aistudio.google.com/apikey
+- Groq: https://console.groq.com/keys
+"""
+

@@ -2,11 +2,12 @@
 Retriever Module
 Retrieves relevant documents from vector store
 """
+from pathlib import Path
 from langchain_chroma import Chroma
 from langchain_core.vectorstores import VectorStoreRetriever
 
 import sys
-sys.path.insert(0, str(__file__).rsplit("/", 2)[0])
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from config import TOP_K
 
 

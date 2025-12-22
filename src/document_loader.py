@@ -2,6 +2,8 @@
 Document Loader Module
 Supports PDF, TXT, MD, and Web pages
 """
+import hashlib
+from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 from langchain_core.documents import Document
@@ -11,6 +13,12 @@ from langchain_community.document_loaders import (
     WebBaseLoader,
 )
 from tqdm import tqdm
+
+
+def generate_doc_id(content: str, source: str) -> str:
+    """Generate a unique document ID based on content hash."""
+    combined = f"{source}:{content[:500]}"
+    return hashlib.md5(combined.encode()).hexdigest()[:16]
 
 
 def load_single_document(file_path: Path) -> List[Document]:
@@ -28,11 +36,29 @@ def load_single_document(file_path: Path) -> List[Document]:
             return []
         
         docs = loader.load()
-        # Add source metadata
+        
+        # Add enriched metadata
+        timestamp = datetime.now().isoformat()
         for doc in docs:
             doc.metadata["source"] = str(file_path)
             doc.metadata["file_name"] = file_path.name
+            doc.metadata["file_type"] = suffix[1:]  # Remove the dot
+            doc.metadata["loaded_at"] = timestamp
+            doc.metadata["doc_id"] = generate_doc_id(doc.page_content, str(file_path))
         return docs
+    except UnicodeDecodeError:
+        # Try with different encoding
+        try:
+            loader = TextLoader(str(file_path), encoding="latin-1")
+            docs = loader.load()
+            for doc in docs:
+                doc.metadata["source"] = str(file_path)
+                doc.metadata["file_name"] = file_path.name
+                doc.metadata["encoding"] = "latin-1"
+            return docs
+        except Exception as e:
+            print(f"❌ Error loading {file_path.name}: {e}")
+            return []
     except Exception as e:
         print(f"❌ Error loading {file_path.name}: {e}")
         return []
@@ -74,10 +100,13 @@ def load_from_urls(urls: List[str]) -> List[Document]:
         loader = WebBaseLoader(urls)
         docs = loader.load()
         
-        # Add URL as source
+        # Add enriched metadata
+        timestamp = datetime.now().isoformat()
         for doc, url in zip(docs, urls):
             doc.metadata["source"] = url
             doc.metadata["type"] = "web"
+            doc.metadata["loaded_at"] = timestamp
+            doc.metadata["doc_id"] = generate_doc_id(doc.page_content, url)
         
         print(f"✅ Loaded {len(docs)} web page(s)")
         return docs
@@ -100,3 +129,4 @@ def load_all_documents(
         all_docs.extend(load_from_urls(urls))
     
     return all_docs
+

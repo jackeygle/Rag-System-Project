@@ -3,6 +3,8 @@ Generator Module
 Uses Groq LLM to generate responses based on retrieved context
 Falls back to general knowledge when no relevant documents found
 """
+import time
+from pathlib import Path
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
@@ -10,7 +12,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.vectorstores import VectorStoreRetriever
 
 import sys
-sys.path.insert(0, str(__file__).rsplit("/", 2)[0])
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from config import GROQ_API_KEY, LLM_MODEL
 
 
@@ -79,6 +81,43 @@ def create_rag_chain(retriever: VectorStoreRetriever):
     return rag_chain
 
 
-def query(chain, question: str) -> str:
-    """Execute a query and return the response."""
-    return chain.invoke(question)
+def query(chain, question: str, max_retries: int = 3) -> str:
+    """Execute a query with retry logic for transient failures.
+    
+    Args:
+        chain: The RAG chain to execute
+        question: The user's question
+        max_retries: Maximum number of retry attempts
+        
+    Returns:
+        The generated response
+    """
+    last_error = None
+    
+    for attempt in range(max_retries):
+        try:
+            return chain.invoke(question)
+        except Exception as e:
+            last_error = e
+            error_str = str(e).lower()
+            
+            # Check for non-retryable errors
+            if "api_key" in error_str or "authentication" in error_str:
+                raise ValueError(
+                    "❌ API authentication failed. Please check your GROQ_API_KEY."
+                ) from e
+            
+            if "rate_limit" in error_str or "429" in str(e):
+                # Rate limited - wait longer before retry
+                wait_time = (attempt + 1) * 2
+                print(f"⚠️  Rate limited, waiting {wait_time}s before retry...")
+                time.sleep(wait_time)
+            elif attempt < max_retries - 1:
+                # Other transient errors - brief wait
+                time.sleep(0.5)
+    
+    # All retries failed
+    raise RuntimeError(
+        f"❌ Query failed after {max_retries} attempts. Last error: {last_error}"
+    )
+
