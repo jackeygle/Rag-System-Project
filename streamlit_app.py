@@ -370,6 +370,64 @@ st.markdown("""
         font-size: 0.9rem;
         opacity: 0.7;
     }
+    
+    /* Chat Input Bottom Bar - Fix white background */
+    [data-testid="stChatInput"],
+    [data-testid="stChatInput"] > div,
+    [data-testid="stBottom"],
+    [data-testid="stBottom"] > div,
+    .stChatInput,
+    .stChatInputContainer,
+    div[data-testid="stBottomBlockContainer"],
+    div[data-testid="stBottomBlockContainer"] > div {
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+    
+    /* Chat input text area styling */
+    [data-testid="stChatInput"] textarea,
+    [data-testid="stChatInput"] input {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 12px !important;
+        color: #fff !important;
+    }
+    
+    [data-testid="stChatInput"] textarea:focus,
+    [data-testid="stChatInput"] input:focus {
+        border-color: #667eea !important;
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.3) !important;
+    }
+    
+    [data-testid="stChatInput"] textarea::placeholder,
+    [data-testid="stChatInput"] input::placeholder {
+        color: rgba(255, 255, 255, 0.4) !important;
+    }
+    
+    /* Bottom container background fix */
+    .block-container {
+        background: transparent !important;
+    }
+    
+    /* Main content area */
+    [data-testid="stMainBlockContainer"],
+    .main .block-container {
+        background: transparent !important;
+    }
+    
+    /* Additional bottom bar overrides */
+    section[data-testid="stBottom"] {
+        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%) !important;
+    }
+    
+    /* Fix any remaining white backgrounds */
+    .main, .main > div, [data-testid="stAppViewContainer"] {
+        background: transparent !important;
+    }
+    
+    [data-testid="stAppViewContainer"] > section {
+        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%) !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
