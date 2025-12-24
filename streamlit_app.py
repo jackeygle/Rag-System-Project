@@ -170,13 +170,12 @@ st.markdown("""
         font-size: 0.75rem;
     }
     
-    /* Chat Container */
+    /* Chat Container - only shows when has messages */
     .chat-container {
         background: rgba(0, 0, 0, 0.2);
         border-radius: 20px;
         padding: 1.5rem;
         margin-bottom: 1rem;
-        min-height: 400px;
         max-height: 500px;
         overflow-y: auto;
     }
@@ -607,22 +606,12 @@ def main():
     </div>
     """, unsafe_allow_html=True)
     
-    # Chat Container
-    st.markdown('<div class="chat-container">', unsafe_allow_html=True)
-    
-    if not st.session_state.messages:
-        st.markdown("""
-        <div class="empty-state">
-            <div class="empty-icon">💬</div>
-            <div class="empty-text">Start a conversation</div>
-            <div class="empty-hint">Ask questions about your documents below</div>
-        </div>
-        """, unsafe_allow_html=True)
-    else:
+    # Chat Container - only show when there are messages
+    if st.session_state.messages:
+        st.markdown('<div class="chat-container">', unsafe_allow_html=True)
         for msg in st.session_state.messages:
             render_message(msg["role"], msg["content"], msg.get("time"))
-    
-    st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
     
     # Example Questions
     st.markdown("#### 💡 Try asking:", unsafe_allow_html=True)
