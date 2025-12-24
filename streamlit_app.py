@@ -387,14 +387,15 @@ st.markdown("""
     /* Chat input text area styling */
     [data-testid="stChatInput"] textarea,
     [data-testid="stChatInput"] input {
-        background: rgba(255, 255, 255, 0.05) !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        background: rgba(15, 12, 41, 0.9) !important;
+        border: 1px solid rgba(102, 126, 234, 0.3) !important;
         border-radius: 12px !important;
         color: #fff !important;
     }
     
     [data-testid="stChatInput"] textarea:focus,
     [data-testid="stChatInput"] input:focus {
+        background: rgba(15, 12, 41, 0.95) !important;
         border-color: #667eea !important;
         box-shadow: 0 0 20px rgba(102, 126, 234, 0.3) !important;
         outline: none !important;
@@ -405,7 +406,6 @@ st.markdown("""
     [data-testid="stChatInput"] *:focus-visible,
     [data-testid="stChatInput"] *:focus-within {
         outline: none !important;
-        box-shadow: none !important;
     }
     
     [data-testid="stChatInput"] > div:focus,
@@ -413,21 +413,42 @@ st.markdown("""
     [data-testid="stChatInput"] > div:focus-within {
         outline: none !important;
         border: none !important;
-        box-shadow: none !important;
     }
     
-    /* Override any red/error focus styles */
+    /* Override baseweb component styles for dark theme */
     [data-testid="stChatInput"] [data-baseweb],
-    [data-testid="stChatInput"] [data-baseweb]:focus,
-    [data-testid="stChatInput"] [data-baseweb] > div,
-    [data-testid="stChatInput"] [data-baseweb] > div:focus {
+    [data-testid="stChatInput"] [data-baseweb] > div {
+        background: rgba(15, 12, 41, 0.9) !important;
+        background-color: rgba(15, 12, 41, 0.9) !important;
+        border-color: rgba(102, 126, 234, 0.3) !important;
         outline: none !important;
-        border-color: rgba(255, 255, 255, 0.15) !important;
     }
     
+    [data-testid="stChatInput"] [data-baseweb]:focus,
+    [data-testid="stChatInput"] [data-baseweb] > div:focus,
     [data-testid="stChatInput"] [data-baseweb]:focus-within {
-        outline: none !important;
+        background: rgba(15, 12, 41, 0.95) !important;
+        background-color: rgba(15, 12, 41, 0.95) !important;
         border-color: #667eea !important;
+        outline: none !important;
+    }
+    
+    /* Input container background */
+    [data-testid="stChatInput"] > div > div,
+    [data-testid="stChatInput"] > div > div > div {
+        background: rgba(15, 12, 41, 0.9) !important;
+        background-color: rgba(15, 12, 41, 0.9) !important;
+    }
+    
+    /* Send button styling */
+    [data-testid="stChatInput"] button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        border: none !important;
+        border-radius: 8px !important;
+    }
+    
+    [data-testid="stChatInput"] button svg {
+        fill: #fff !important;
     }
     
     [data-testid="stChatInput"] textarea::placeholder,
