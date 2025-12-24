@@ -377,9 +377,11 @@ st.markdown("""
     [data-testid="stBottom"] > div,
     .stChatInput,
     .stChatInputContainer,
+    .stChatFloatingInputContainer,
+    .stBottomBlockContainer,
     div[data-testid="stBottomBlockContainer"],
     div[data-testid="stBottomBlockContainer"] > div {
-        background: transparent !important;
+        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%) !important;
         background-color: transparent !important;
     }
     
