@@ -397,6 +397,37 @@ st.markdown("""
     [data-testid="stChatInput"] input:focus {
         border-color: #667eea !important;
         box-shadow: 0 0 20px rgba(102, 126, 234, 0.3) !important;
+        outline: none !important;
+    }
+    
+    /* Remove all outlines from chat input */
+    [data-testid="stChatInput"] *:focus,
+    [data-testid="stChatInput"] *:focus-visible,
+    [data-testid="stChatInput"] *:focus-within {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    
+    [data-testid="stChatInput"] > div:focus,
+    [data-testid="stChatInput"] > div:focus-visible,
+    [data-testid="stChatInput"] > div:focus-within {
+        outline: none !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* Override any red/error focus styles */
+    [data-testid="stChatInput"] [data-baseweb],
+    [data-testid="stChatInput"] [data-baseweb]:focus,
+    [data-testid="stChatInput"] [data-baseweb] > div,
+    [data-testid="stChatInput"] [data-baseweb] > div:focus {
+        outline: none !important;
+        border-color: rgba(255, 255, 255, 0.15) !important;
+    }
+    
+    [data-testid="stChatInput"] [data-baseweb]:focus-within {
+        outline: none !important;
+        border-color: #667eea !important;
     }
     
     [data-testid="stChatInput"] textarea::placeholder,
